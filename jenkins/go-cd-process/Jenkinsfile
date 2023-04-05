@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    tools {
+        go 'go-1.20'
+    }
+    environment {
+        GO111MODULE='on'
+    }
+
+    stages {
+        stage('STAGING') {
+            steps {
+                echo 'Pulling from github sample go web app code...'
+                sh 'go version'
+                git 'https://github.com/bindian0509/go-webapp-sample.git'
+                sh 'go test ./... -v'
+            }
+        }
+        stage('Building our Image') {
+            steps {
+                script {
+
+                    app = docker.build("bindian0509/go-webapp-sample")
+                }
+            }
+        }
+    }
+}
