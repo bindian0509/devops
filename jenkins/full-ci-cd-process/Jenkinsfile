@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+    tools {
+        go 'go-1.20'
+    }
+    environment {
+        GO111MODULE='on'
+    }
+
+    stages {
+        stage('TEST') {
+            steps {
+                echo 'Pulling from github sample go web app code...'
+                sh 'go version'
+                git 'https://github.com/bindian0509/go-webapp-sample.git'
+                sh 'go test ./... -v'
+            }
+        }
+        stage('BUILD') {
+            steps {
+                git 'https://github.com/bindian0509/go-webapp-sample.git'
+                sh 'go build .'
+            }
+        }
+        stage('RUN') {
+            steps {
+                sh 'cd /var/lib/jenkins/workspace/GoFullPipeline && go-webapp-sample &'
+            }
+        }
+    }
+}
