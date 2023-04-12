@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: postgres-pod
+  namespace: default
+  labels:
+    name: postgres-pod
+    app: "voting-app"
+spec:
+  containers:
+  - name: postgres
+    image: postgres
+    resources:
+      limits:
+        cpu: 200m
+        memory: 500Mi
+      requests:
+        cpu: 100m
+        memory: 200Mi
+    ports:
+    - containerPort:  5432
+    env:
+      - name: POSTGRES_USER
+        value: "postgres"
+      - name: POSTGRES_PASSWORD
+        value: "postgres"
+  restartPolicy: Always
