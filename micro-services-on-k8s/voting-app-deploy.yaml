@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  voting-app-deploy
+  namespace: default
+  labels:
+    name:  voting-app-deploy
+    app:  voting-app
+spec:
+  selector:
+    matchLabels:
+      app: voting-app
+      name: voting-app-pod
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      name: "voting-app-pod"
+      namespace: default
+      labels:
+        name: "voting-app-pod"
+        app: "voting-app"
+    spec:
+      containers:
+      - name: voting-app
+        image: kodekloud/examplevotingapp_vote:v1
+        resources:
+          limits:
+            cpu: 200m
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        ports:
+          - containerPort:  80
+            name:  http
+      restartPolicy: Always
+

@@ -10,3 +10,11 @@ spec:
   containers:
     - name: worker-app
       image: kodekloud/examplevotingapp_worker:v1
+      resources:
+        limits:
+          cpu: 200m
+          memory: 500Mi
+        requests:
+          cpu: 100m
+          memory: 200Mi
+      restartPolicy: Always

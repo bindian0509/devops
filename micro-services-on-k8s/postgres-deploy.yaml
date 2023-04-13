@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name:  postgres-deploy
+  namespace: default
+  labels:
+    app:  voting-app
+    name: postgres-deploy
+spec:
+  selector:
+    matchLabels:
+      app: voting-app
+      name: postgres-pod
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      name: postgres-pod
+      namespace: default
+      labels:
+        name: postgres-pod
+        app: "voting-app"
+    spec:
+      containers:
+      - name: postgres
+        image: postgres
+        resources:
+          limits:
+            cpu: 200m
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        ports:
+        - containerPort:  5432
+        env:
+          - name: POSTGRES_USER
+            value: "postgres"
+          - name: POSTGRES_PASSWORD
+            value: "postgres"
+          - name: POSTGRES_HOST_AUTH_METHOD
+            value: trust
+      restartPolicy: Always
